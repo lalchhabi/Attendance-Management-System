@@ -324,66 +324,6 @@ def login():
                     second.update_idletasks()
                     time.sleep(1)
                     progress_bar['value'] = 40
-                    
-                    from sklearn.preprocessing import LabelEncoder
-                    from sklearn.neighbors import KNeighborsClassifier
-                    from sklearn.svm import SVC
-                    import pickle
-                    import numpy as np
-                    import os
-
-                    from sklearn.model_selection import train_test_split
-                    from sklearn.model_selection import GridSearchCV
-                    from sklearn.metrics import classification_report
-
-                    import warnings
-                    warnings.filterwarnings('ignore')
-
-
-                    currentDir = os.getcwd()
-
-                    # paths to embedding pickle file
-                    embeddingPickle = os.path.join(currentDir, "output/FinalEmbeddings.pickle")
-
-                    # path to save recognizer pickle file
-                    recognizerPickle = os.path.join(currentDir, "output/FinalRecognizer.pickle")
-
-                    # path to save labels pickle file
-                    labelPickle = os.path.join(currentDir, "TrainingImage")
-
-                    # loading embeddings pickle
-                    data = pickle.loads(open(embeddingPickle, "rb").read())
-
-                    # encoding labels by names
-                    label = LabelEncoder()
-                    labels = label.fit_transform(data["names"])
-
-                    # getting embeddings
-                    Embeddings = np.array(data["embeddings"])
-
-                    print("Total number of embeddings : ", Embeddings.shape)
-                    print("Total number of labels :", len(labels))
-
-
-                    ############ If you want to train SVM Classifier uncomment below code #########
-                   
-                    recognizer = KNeighborsClassifier(n_neighbors=5)
-                    recognizer.fit(Embeddings, labels)
-
-                    # write the actual face recognition model to disk
-                    f = open(recognizerPickle, "wb")
-                    f.write(pickle.dumps(recognizer))
-                    f.close()
-
-
-
-                    # write the label encoder to disk
-                    f = open(labelPickle,"wb")
-                    f.write(pickle.dumps(label))
-                    f.close()
-
-                    print("[Info] : Models are saved successfully :) ")
-
                     time.sleep(1)
                     progress_bar['value'] = 60
                     second.update_idletasks()
@@ -670,7 +610,7 @@ def tick():
     date_string = time.strftime("%d:%m:%Y")
     print(time_string , date_string)
     clock.config (text = "Time :" + time_string  + "\n" + "Date :" + date_string)
-    #clock.after(200,tick)
+    clock.after(200,tick)
 
 ########################### Admin login page form ####################################
 bg_icon = PhotoImage(file = "Photos/background.png", master = face)
