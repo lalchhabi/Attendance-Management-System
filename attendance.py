@@ -16,6 +16,8 @@ import time
 import random
 import pandas as pd
 from tkinter import filedialog
+import gtts
+from gtts import gTTS
 
 
 ####################### Admin Login page #############
@@ -41,10 +43,13 @@ def login():
 
 
         messagebox.showerror("Error", "All fields are Required")
+        # ob1 = gTTS("All Fields are Required", lang = "en", slow = False)
+        # ob1.save("fields.mp3")
+        # os.system("fields.mp3")
 
         ######################################## To change the user data
     
-    elif username_var.get() == user_var or password_var.get() == pass_var:
+    elif username_var.get() == "sumit" or password_var.get() == "12345":
     
     
     
@@ -57,13 +62,13 @@ def login():
             bg_photo = PhotoImage(file = "Photos/background3.png", master = first)
             background_pic = Label(first, image = bg_photo)
             background_pic.pack()
-            first.title("Manage Employee Department")
+            first.title("Manage Employee post")
             
-            face = Label(first, text = "Management of Employee & Department" , bg = "green" , fg = "yellow", padx = 15, pady = 15, font = ("Times New Roman", 20, "bold") ,borderwidth = 5, relief = RIDGE).place(x = 500, y = 10)
+            face = Label(first, text = "Management of Employee & post" , bg = "green" , fg = "yellow", padx = 15, pady = 15, font = ("Times New Roman", 20, "bold") ,borderwidth = 5, relief = RIDGE).place(x = 500, y = 10)
             main = Label(first, bg = "gray", borderwidth = 1).pack()
             #All Required variables for database
             eid_var = StringVar()
-            department_var = StringVar()
+            post_var = StringVar()
             fname_var = StringVar()
             gender_var = StringVar()
             contact_var = StringVar()
@@ -78,14 +83,14 @@ def login():
            
             ########################################## To Add the Employee
             def add_employee():
-                if department_var.get() == "" or fname_var.get() == "" or gender_var.get() ==  "" or contact_var.get() == "" or address_var.get() == "" or DOJ_var.get() == "":
+                if post_var.get() == "" or fname_var.get() == "" or gender_var.get() ==  "" or contact_var.get() == "" or address_var.get() == "" or DOJ_var.get() == "":
                     messagebox.showerror("Error","All fields are Required", parent = first)
                 else:
 
                     conn = pymysql.connect(host = "localhost", user = "root", password = "", database = "recognition")
                     cur = conn.cursor()
                     cur.execute("insert into attendance VALUES (%s,%s,%s,%s,%s,%s,%s)", (eid_var.get(),
-                                                                                                department_var.get(),
+                                                                                                post_var.get(),
                                                                                                 fname_var.get(),
                                                                                                 gender_var.get(),
                                                                                                 contact_var.get(),
@@ -116,7 +121,7 @@ def login():
             def clear():
 
                 eid_var.set("")
-                department_var.set("")
+                post_var.set("")
                 fname_var.set("")
                 gender_var.set("")
                 contact_var.set("")
@@ -130,7 +135,7 @@ def login():
                 contents = table1.item(cursor)
                 row = contents['values']
                 eid_var.set(row[0])
-                department_var.set(row[1])
+                post_var.set(row[1])
                 fname_var.set(row[2])
                 gender_var.set(row[3])
                 contact_var.set(row[4])
@@ -138,13 +143,13 @@ def login():
                 DOJ_var.set(row[6])
 ############################## To update the data  
             def update():
-                if department_var.get() == "" or fname_var.get() == "" or gender_var.get() ==  "" or contact_var.get() == "" or address_var.get() == "" or DOJ_var.get() == "":
+                if post_var.get() == "" or fname_var.get() == "" or gender_var.get() ==  "" or contact_var.get() == "" or address_var.get() == "" or DOJ_var.get() == "":
                     messagebox.showerror("Error","All fields are Required", parent = first)
                 else:
                     conn = pymysql.connect(host = "localhost", user = "root", password = "", database = "recognition")
                     cur = conn.cursor()
-                    cur.execute("update attendance set department = %s, fname = %s, gender = %s, contact_no = %s, email_address = %s, date_of_join = %s where eid = %s", (                                                               
-                                                                                    department_var.get(),
+                    cur.execute("update attendance set post = %s, fname = %s, gender = %s, contact_no = %s, email_address = %s, date_of_join = %s where eid = %s", (                                                               
+                                                                                    post_var.get(),
                                                                                     fname_var.get(),
                                                                                     gender_var.get(),
                                                                                     contact_var.get(),
@@ -159,7 +164,7 @@ def login():
 
 ###################### To delete the items
             def delete():
-                if department_var.get() == "" or fname_var.get() == "" or gender_var.get() ==  "" or contact_var.get() == "" or address_var.get() == "" or DOJ_var.get() == "":
+                if post_var.get() == "" or fname_var.get() == "" or gender_var.get() ==  "" or contact_var.get() == "" or address_var.get() == "" or DOJ_var.get() == "":
                     messagebox.showerror("Error","All fields are Required", parent = first)
                 else:
                     conn = pymysql.connect(host = "localhost", user = "root", password = "", database = "recognition")
@@ -171,20 +176,6 @@ def login():
                     clear()
             
             def search_data():
-                # conn = pymysql.connect(host = "localhost", user = "root", password = "", database = "recognition")
-                # cur = conn.cursor()
-                # cur.execute("select * from attendance where eid = '%s'" %eid_var.get())
-                # result = cur.fetchone()
-                # eid_var.set(result[1])
-                # department_var.set(result[2])
-                # fname_var.set(result[3])
-                # gender_var.set(result[4])
-                # contact_var.set(result[5])
-                # address_var.set(result[6])
-                # DOJ_var.set(result[7])
-                # e1.configure(state = 'disabled')
-                # conn.commit()
-                # conn.close()
                 conn = pymysql.connect(host = "localhost", user = "root", password = "", database = "recognition")
                 cur = conn.cursor()
                 cur.execute("select * from attendance where " + str(search_by.get()) + " like '%" + str(search_text.get()) + "%'")
@@ -253,8 +244,8 @@ def login():
             titles = Label(f2, text = "Manage Employee" ,bg = "gray", font = ("Italic", 20, "bold")).place(x = 90, y = 30)
             id = Label(f2, text = "Employee ID", bg = "gray", font = ("italic",13, "bold")).place(x = 35, y = 100 )
             E1 = Entry(f2, width = 20, textvariable = eid_var,  font = ("italic",13, "bold") ).place(x = 180  , y = 100)
-            department = Label(f2, text = "Department", bg = "gray",  font = ("italic",13, "bold")).place(x = 35, y = 150 )
-            E2 = Entry(f2, width = 20, textvariable = department_var,  font = ("italic",13, "bold")).place(x =180, y = 150)
+            post = Label(f2, text = "Post", bg = "gray",  font = ("italic",13, "bold")).place(x = 35, y = 150 )
+            E2 = Entry(f2, width = 20, textvariable = post_var,  font = ("italic",13, "bold")).place(x =180, y = 150)
             name = Label(f2, text = "Full Name", bg = "gray", font = ("italic",13, "bold")).place(x =35, y = 200)
             E3 = Entry(f2, width = 20, textvariable = fname_var , font = ("italic",12, "bold")).place(x = 180, y = 200)
             gender = Label(f2, text = "Gender", bg = "gray", font = ("italic",12, "bold")).place(x = 35, y= 250)
@@ -279,8 +270,8 @@ def login():
             f4 = Frame(first, height = 600, width = 900, bg = "gray", borderwidth = "3", relief = SUNKEN)
             f4.place(x = 440, y = 90)
             l1 = Label(first, text = "Search By:",font = ("times new roman", 18 ,"bold"),bg = "gray", fg = "white").place(x = 460, y = 100 )
-            c1 = Combobox(first, textvariable = search_by, values = ["eid","fname","department"], state = "readonly", width = "25").place(x = 580, y = 109)
-            E7 = Entry(first, width = "25", font = ("times new Roman",10) ).place(x = 780, y = 109)
+            c1 = Combobox(first, textvariable = search_by, values = ["eid","fname","post"], state = "readonly", width = "25").place(x = 580, y = 109)
+            E7 = Entry(first, textvariable = search_text, width = "25", font = ("times new Roman",10) ).place(x = 780, y = 109)
             btn7 = Button(first,  text = "Search ",  height = "1", width = "16", command = search_data, font = ("Times new Roman", 13 , "bold")).place(x = 960, y = 100 )
             btn8 = Button(first, text = "Show All",  height = "1", width = "16", command = show_data, font = ("Times new Roman", 13 , "bold")).place(x = 1150, y = 100)
 ################################################################################## Table frame
@@ -288,13 +279,13 @@ def login():
             f5.place(x = 20, y = 45, height = 550, width = 855 )
             scroll_x =Scrollbar(f5, orient = HORIZONTAL)
             scroll_y = Scrollbar(f5, orient = VERTICAL)
-            table1 = Treeview(f5, columns = ("eid","department", "fname","gender","contact.no","address","DOJ"), xscrollcommand = scroll_x.set, yscrollcommand = scroll_y.set)
+            table1 = Treeview(f5, columns = ("eid","post", "fname","gender","contact.no","address","DOJ"), xscrollcommand = scroll_x.set, yscrollcommand = scroll_y.set)
             scroll_x.pack(side = BOTTOM, fill = X )
             scroll_y.pack(side = RIGHT, fill = Y)
             scroll_x.config(command = table1.xview)
             scroll_y.config(command = table1.yview)
             table1.heading("eid", text ="Employee ID")
-            table1.heading('department', text = "Department")
+            table1.heading('post', text = "Post")
             table1.heading("fname", text= "Full Name")
             table1.heading("gender",text = "Gender")
             table1.heading("contact.no", text = "Contact_No")
@@ -302,7 +293,7 @@ def login():
             table1.heading("DOJ", text= "Date Of Join")
             table1['show'] = 'headings'
             table1.column("eid", width = 119)
-            table1.column("department", width = 119)
+            table1.column("post", width = 119)
             table1.column("fname", width = 119)
             table1.column("gender", width = 119)
             table1.column("contact.no", width = 119)
@@ -555,7 +546,7 @@ def login():
           table_frame.place(x= 10, y= 55, height = 560, width = 905)
           scroll_x = Scrollbar(table_frame, orient = HORIZONTAL)
           scroll_y = Scrollbar(table_frame, orient = VERTICAL)
-          login_table = Treeview(table_frame, columns = ("aid", "eid", "name", "department", "status", "date", "time"), xscrollcommand = scroll_x.set, yscrollcommand = scroll_y.set)
+          login_table = Treeview(table_frame, columns = ("aid", "eid", "name", "post", "status", "date", "time"), xscrollcommand = scroll_x.set, yscrollcommand = scroll_y.set)
           scroll_x.pack(side = BOTTOM, fill = X )
           scroll_y.pack(side = RIGHT, fill = Y)
           scroll_x.config( command = login_table.xview)
@@ -563,7 +554,7 @@ def login():
           login_table.heading("aid", text ="Attendance ID")
           login_table.heading("eid", text ="Employee ID")
           login_table.heading('name', text = "Name")
-          login_table.heading("department", text= "Department")
+          login_table.heading("post", text= "post")
           login_table.heading("status", text = "Attendance Status")
           login_table.heading("date", text = "Date")
           login_table.heading("time", text = "Time")
@@ -571,7 +562,7 @@ def login():
           login_table.column("aid",  width = 119)
           login_table.column("eid", width = 119)
           login_table.column("name", width = 119)
-          login_table.column("department", width = 119)
+          login_table.column("post", width = 119)
           login_table.column("status", width = 119)
           login_table.column("date", width = 119)
           login_table.column("time", width = 119)
@@ -640,7 +631,7 @@ def login():
         faceslidercolor()
        
         photo1 = PhotoImage(file = "Photos/management.png", master = attendance)
-        B1 = Button(attendance, image = photo1, text = "Manage Employee Department",font = ("Times New Roman" , 15), fg = "green", height =230, width = 265, command = manage_employee, compound = BOTTOM )
+        B1 = Button(attendance, image = photo1, text = "Manage Employee post",font = ("Times New Roman" , 15), fg = "green", height =230, width = 265, command = manage_employee, compound = BOTTOM )
         B1.place(x = 20, y = 100)
 
         photo2 = PhotoImage(file = "Photos/face_recognizer.png",  master = attendance)
